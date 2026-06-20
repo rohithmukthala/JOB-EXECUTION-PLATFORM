@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum JobStatus {
+  pending
+  running
+  succeeded
+  failed
+  dead
+}
+
+enum WorkerStatus {
+  active
+  dead
+}
+
+model Job {
+  id             String     @id @default(uuid())
+  type           String
+  payload        Json       @default("{}")
+  priority       Int        @default(0)
+  status         JobStatus  @default(pending)
+  progress       Int        @default(0)
+  attempts       Int        @default(0)
+  maxAttempts    Int        @default(3) @map("max_attempts")
+  availableAt    DateTime   @default(now()) @map("available_at")
+  leaseExpiresAt DateTime?  @map("lease_expires_at")
+  workerId       String?    @map("worker_id")
+  worker         Worker?    @relation(fields: [workerId], references: [id])
+  result         Json?
+  error          String?
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+  startedAt      DateTime?  @map("started_at")
+  finishedAt     DateTime?  @map("finished_at")
+  events         JobEvent[]
+
+  @@index([status, availableAt])
+  @@map("jobs")
+}
+
+model Worker {
+  id              String       @id @default(uuid())
+  name            String
+  status          WorkerStatus @default(active)
+  lastHeartbeatAt DateTime     @default(now()) @map("last_heartbeat_at")
+  registeredAt    DateTime     @default(now()) @map("registered_at")
+  jobs            Job[]
+  events          JobEvent[]
+
+  @@map("workers")
+}
+
+model JobEvent {
+  id        String   @id @default(uuid())
+  jobId     String   @map("job_id")
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  workerId  String?  @map("worker_id")
+  worker    Worker?  @relation(fields: [workerId], references: [id])
+  type      String
+  message   String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([jobId, createdAt])
+  @@map("job_events")
+}
