@@ -1,5 +1,41 @@
+# Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
 dist/
+build/
+out/
 .next/
+*.tsbuildinfo
+
+# Environment / secrets
 .env
+.env.local
+.env.*.local
+
+# Logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Prisma generated (keep schema, ignore generated client if desired)
+# server/prisma/migrations are intentionally committed
+
+# Misc
+.vercel
+coverage/
