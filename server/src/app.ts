@@ -21,5 +21,13 @@ export function createApp() {
   app.get("/health", (_req, res) => res.json({ ok: true }));
   app.use("/api/jobs", jobsRouter);
   app.use("/api/workers", workersRouter);
+
+  // Last-resort error handler: any rejection forwarded by asyncHandler lands here
+  // and becomes a 500 response, so a single failed query can't crash the server.
+  app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error("[api] request error:", err);
+    res.status(500).json({ error: "internal server error" });
+  });
+
   return app;
 }
