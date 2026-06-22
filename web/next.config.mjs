@@ -1,4 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = { transpilePackages: ["@job-platform/shared"] };
+const nextConfig = {};
 
 export default nextConfig;

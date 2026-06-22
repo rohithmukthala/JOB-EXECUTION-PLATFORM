@@ -1,4 +1,4 @@
-import type { Job, JobEvent, Worker } from "@job-platform/shared";
+import type { Job, JobEvent, Worker } from "./types";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
