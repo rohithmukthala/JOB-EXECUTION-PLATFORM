@@ -2,6 +2,10 @@
   "name": "job-platform",
   "private": true,
   "workspaces": ["shared", "server", "worker", "web"],
+  "devDependencies": {
+    "prisma": "^5.22.0",
+    "tsx": "^4.19.2"
+  },
   "scripts": {
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
@@ -9,6 +13,9 @@
     "dev:server": "npm run -w server dev",
     "dev:worker": "npm run -w worker dev",
     "dev:web": "npm run -w web dev",
-    "test": "npm run -w server test"
+    "test": "npm run -w server test",
+    "build:server": "prisma generate --schema=server/prisma/schema.prisma",
+    "start:server": "prisma migrate deploy --schema=server/prisma/schema.prisma && tsx server/src/index.ts",
+    "start:worker": "tsx worker/src/index.ts"
   }
 }
